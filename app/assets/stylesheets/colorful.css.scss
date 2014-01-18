@@ -1,8 +1,3 @@
-// Place all the styles related to the colorful controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
-
-
 .color {
 	font-size: 7em;
 	font-family: monospace;
@@ -15,4 +10,12 @@
 	width: 33.333%;
 	margin-left: 33.333%;
 	margin-right: 33.333%;
+}
+.container {
+	height: 100%;
+	width: 100%;
+	background-color: grey;
+	position: absolute;
+	left: 0;
+	top: 0;
 }
