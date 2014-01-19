@@ -5,11 +5,13 @@
 	position: relative;
 	text-align: center;
 	margin-top: 150px;
-	background: black;
-	color: white;
 	width: 33.333%;
 	margin-left: 33.333%;
 	margin-right: 33.333%;
+}
+.hex {
+	background-color: black;
+	color: white;
 }
 .container {
 	height: 100%;

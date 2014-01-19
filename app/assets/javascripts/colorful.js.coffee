@@ -23,6 +23,46 @@ paint_bg = (color) ->
 	$('.container').css('background-color', color)
 
 tohex = (cordp) ->
+	xp=cordp[0]
+	yp=cordp[1]
 	hex=""
-	hex+=('00'+Math.round(i*4095).toString(16)).slice(-3) for i in cordp
+	xz = Math.floor(xp*6)
+	xzp = (xp*6)-xz
+	switch xz
+		when 0
+			r=255
+			g=Math.round xzp*255
+			b=0
+		when 1
+			r=Math.round 255*(1-xzp)
+			g=255
+			b=0
+		when 2
+			r=0
+			g=255
+			b=Math.round xzp*255
+		when 3
+			r=0
+			g=Math.round 255*(1-xzp)
+			b=255
+		when 4
+			r=Math.round xzp*255
+			g=0
+			b=255
+		when 5
+			r=255
+			g=0
+			b=Math.round 255*(1-xzp)
+		else
+			console.log "X Zone not in range"
+	rgb_to_hex [r,g,b]
+	
+rgb_to_hex = (rgb) ->
+	hex=""
+	hex+= ('0' + i.toString(16)).slice(-2) for i in rgb
 	"#".concat(hex)
+
+#Input total
+per_to_hex = (per, mult, dig) ->
+	pad = Array(dig).join '0'
+	(pad+Math.round(per*mult).toString(16)).slice(-1*dig)
