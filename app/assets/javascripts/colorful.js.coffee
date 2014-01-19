@@ -29,19 +29,22 @@ tohex = (cordp) ->
 	xzp = (xp*6)-xzone
 	
 	if yp<=0.5
+		# Top Half
 		ypt=2*yp
 		a=Math.round(255*ypt) 		# (0,255)
 		bu=Math.round(a*xzp)			# (0,base)
 		bd=Math.round(a*(1-xzp))	# (base,0)
 		c=0						# (0)
 	else
-		ypb=2*yp-1
+		# Bottom Half
+		ypb=(2*yp)-1
 		a=255					# (255)
-		baseu=Math.round(255*xzp)
-		based=Math.round(255*(1-xzp))
-		bd=Math.round((255-baseu)*xzp+baseu)	# (base,255)
-		bu=Math.round((255-based)*(1-xzp)+based)
 		c=Math.round(255*ypb)			# (0,255)
+		# BaseUp(ypd) -> 255
+		bu=Math.round((255-c)*(xzp)) + c	# (c->255)
+		# 255 -> BaseDown(ypd)
+		based=Math.round(255*(1-ypb))
+		bd=Math.round((255-based)*xzp+based) # (255->c)
 	
 	switch xzone
 		when 0
@@ -49,11 +52,11 @@ tohex = (cordp) ->
 		when 1
 			rgb_to_hex [bd,a,c]
 		when 2
-			rgb_to_hex [bu,c,a]
+			rgb_to_hex [c,a,bu]
 		when 3
 			rgb_to_hex [c,bd,a]
 		when 4
-			rgb_to_hex [c,a,bu]
+			rgb_to_hex [bu,c,a]
 		when 5
 			rgb_to_hex [a,c,bd]
 		else
