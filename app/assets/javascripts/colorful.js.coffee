@@ -25,39 +25,42 @@ paint_bg = (color) ->
 tohex = (cordp) ->
 	xp=cordp[0]
 	yp=cordp[1]
-	hex=""
-	xz = Math.floor(xp*6)
-	xzp = (xp*6)-xz
-	switch xz
+	xzone = Math.floor(xp*6)
+	xzp = (xp*6)-xzone
+	
+	if yp<=0.5
+		ypt=2*yp
+		a=Math.round(255*ypt) 		# (0,255)
+		bu=Math.round(a*xzp)			# (0,base)
+		bd=Math.round(a*(1-xzp))	# (base,0)
+		c=0						# (0)
+	else
+		ypb=2*yp-1
+		a=255					# (255)
+		baseu=Math.round(255*xzp)
+		based=Math.round(255*(1-xzp))
+		bd=Math.round((255-baseu)*xzp+baseu)	# (base,255)
+		bu=Math.round((255-based)*(1-xzp)+based)
+		c=Math.round(255*ypb)			# (0,255)
+	
+	switch xzone
 		when 0
-			r=255
-			g=Math.round xzp*255
-			b=0
+			rgb_to_hex [a,bu,c]
 		when 1
-			r=Math.round 255*(1-xzp)
-			g=255
-			b=0
+			rgb_to_hex [bd,a,c]
 		when 2
-			r=0
-			g=255
-			b=Math.round xzp*255
+			rgb_to_hex [bu,c,a]
 		when 3
-			r=0
-			g=Math.round 255*(1-xzp)
-			b=255
+			rgb_to_hex [c,bd,a]
 		when 4
-			r=Math.round xzp*255
-			g=0
-			b=255
+			rgb_to_hex [c,a,bu]
 		when 5
-			r=255
-			g=0
-			b=Math.round 255*(1-xzp)
+			rgb_to_hex [a,c,bd]
 		else
 			console.log "X Zone not in range"
-	rgb_to_hex [r,g,b]
 	
 rgb_to_hex = (rgb) ->
+	console.log "("+rgb[0]+","+rgb[1]+","+rgb[2]+")"
 	hex=""
 	hex+= ('0' + i.toString(16)).slice(-2) for i in rgb
 	"#".concat(hex)
