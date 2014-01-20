@@ -23,28 +23,29 @@ paint_bg = (color) ->
 	$('.container').css('background-color', color)
 
 tohex = (cordp) ->
-	xp=cordp[0]
-	yp=cordp[1]
-	xzone = Math.floor(xp*6)
-	xzp = (xp*6)-xzone
+	xp=cordp[0] # x % from left side of page
+	yp=cordp[1] # y % from top of page
+	xzone = Math.floor(xp*6) # Zone 0-5 from left to right
+	xzp = (xp*6)-xzone # x % from left side of zone
 	
-	if yp<=0.5
-		# Top Half
-		ypt=2*yp
+	
+	if yp<=0.5 #Top Half 
+		ypt=2*yp	# y % from top (for top half)
 		a=Math.round(255*ypt) 		# (0,255)
 		bu=Math.round(a*xzp)			# (0,base)
 		bd=Math.round(a*(1-xzp))	# (base,0)
 		c=0						# (0)
-	else
-		# Bottom Half
-		ypb=(2*yp)-1
+	
+	else # Bottom Half
+		ypb=(2*yp)-1 # y % from top (for bot. half)
 		a=255					# (255)
 		c=Math.round(255*ypb)			# (0,255)
 		# BaseUp(ypd) -> 255
 		bu=Math.round((255-c)*(xzp)) + c	# (c->255)
 		# 255 -> BaseDown(ypd)
-		based=Math.round(255*(1-ypb))
-		bd=Math.round((255-based)*xzp+based) # (255->c)
+		#based=255-c
+		bd=Math.round(255-((255-c)*xzp))
+		#bd=Math.round((255-based)*xzp+based) # (255->c)
 	
 	switch xzone
 		when 0
