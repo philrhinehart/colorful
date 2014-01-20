@@ -1,11 +1,22 @@
 $(document).ready ->
 	page = [$(window).width(), $(window).height()]
+	
+	$(window).resize (event) ->
+		#Adjust on page resize
+		page = [$(window).width(), $(window).height()]
+
 	$('.container').mousemove (event) ->
 		cords=[event.pageX,event.pageY]
 		cordp=scale_cords cords,page
 		hex = tohex cordp
 		print_hex hex
 		paint_bg hex
+		paint_text_bg rgb_to_hex flip_color hex_str_to_rgb hex
+		paint_text hex
+
+	$('.container').click (event) ->
+		#Save to Clipboard? Sent to bar at bottom/top.
+		$('.bar').show()
 
 print_cords = (cords) ->
 	$('span.x').html(cords[0])
@@ -21,6 +32,15 @@ scale_cords = (cords, page) ->
 
 paint_bg = (color) ->
 	$('.container').css('background-color', color)
+
+paint_text_bg = (color) ->
+	$('.hex').css('background-color', color)
+	$('.sub').html(color)
+	$('.sub').css('color', color)
+
+
+paint_text = (color) ->
+	$('.hex').css('color', color)
 
 tohex = (cordp) ->
 	xp=cordp[0] # x % from left side of page
@@ -43,9 +63,7 @@ tohex = (cordp) ->
 		# BaseUp(ypd) -> 255
 		bu=Math.round((255-c)*(xzp)) + c	# (c->255)
 		# 255 -> BaseDown(ypd)
-		#based=255-c
 		bd=Math.round(255-((255-c)*xzp))
-		#bd=Math.round((255-based)*xzp+based) # (255->c)
 	
 	switch xzone
 		when 0
@@ -64,7 +82,6 @@ tohex = (cordp) ->
 			console.log "X Zone not in range"
 	
 rgb_to_hex = (rgb) ->
-	console.log "("+rgb[0]+","+rgb[1]+","+rgb[2]+")"
 	hex=""
 	hex+= ('0' + i.toString(16)).slice(-2) for i in rgb
 	"#".concat(hex)
@@ -73,3 +90,14 @@ rgb_to_hex = (rgb) ->
 per_to_hex = (per, mult, dig) ->
 	pad = Array(dig).join '0'
 	(pad+Math.round(per*mult).toString(16)).slice(-1*dig)
+
+
+flip_color = (color) ->
+	for i in color
+		255-i
+
+hex_str_to_rgb = (hex) ->
+	r=parseInt(hex[1..2],16)
+	g=parseInt(hex[3..4],16)
+	b=parseInt(hex[5..6],16)
+	[r,g,b]
