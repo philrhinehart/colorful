@@ -1,22 +1,31 @@
 $(document).ready ->
 	page = [$(window).width(), $(window).height()]
-	
+	$(window).scrollTop(page[1])
 	$(window).resize (event) ->
 		#Adjust on page resize
 		page = [$(window).width(), $(window).height()]
-
+	
 	$('.container').mousemove (event) ->
-		cords=[event.pageX,event.pageY]
-		cordp=scale_cords cords,page
-		hex = tohex cordp
-		print_hex hex
-		paint_bg hex
-		paint_text_bg rgb_to_hex flip_color hex_str_to_rgb hex
-		paint_text hex
+		update_color(event.pageX, event.pageY, $(window).scrollTop(), page)
 
 	$('.container').click (event) ->
 		#Save to Clipboard? Sent to bar at bottom/top.
 		$('.bar').show()
+		add_color( $('.hex').html() )
+		adjust_saved()
+	
+	$(window).scroll (event) ->
+		update_color(event.pageX, event.pageY, $(window).scrollTop(), page)
+		
+update_color = (x, y, scroll, page) ->
+	cords=[x,y]
+	cordp=scale_cords cords, page
+	hex = tohex cordp, scroll
+	print_hex hex
+	paint_bg hex
+	paint_text_bg rgb_to_hex flip_color hex_str_to_rgb hex
+	paint_text hex
+
 
 print_cords = (cords) ->
 	$('span.x').html(cords[0])
@@ -37,7 +46,6 @@ paint_text_bg = (color) ->
 	$('.hex').css('background-color', color)
 	$('.sub').html(color)
 	$('.sub').css('color', color)
-
 
 paint_text = (color) ->
 	$('.hex').css('color', color)
@@ -91,7 +99,6 @@ per_to_hex = (per, mult, dig) ->
 	pad = Array(dig).join '0'
 	(pad+Math.round(per*mult).toString(16)).slice(-1*dig)
 
-
 flip_color = (color) ->
 	for i in color
 		255-i
@@ -101,3 +108,13 @@ hex_str_to_rgb = (hex) ->
 	g=parseInt(hex[3..4],16)
 	b=parseInt(hex[5..6],16)
 	[r,g,b]
+
+add_color = (color) ->
+
+adjust_saved = () ->
+	count = $('.saved').length
+	height = $(window).height/count
+	$('.saved').css('height',height)
+
+unsaturated = (cordp) ->
+	cordp[1]*255

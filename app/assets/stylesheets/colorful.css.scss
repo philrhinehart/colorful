@@ -3,7 +3,7 @@
 	font-family: monospace;
 	clear: both;
 	
-	position: absolute;
+	position: fixed;
 	left: 50%;
 	top: 25%;
 	text-align: center;
@@ -25,7 +25,7 @@
 	font-size: 0.2em;
 }
 .container {
-	height: 100%;
+	height: 200%;
 	width: 100%;
 	background-color: #fff;
 	position: absolute;
@@ -33,17 +33,18 @@
 	top: 0;
 }
 .bar {
-	position: absolute;
-	width: 100%;
-	height: 50px;
-	bottom: 0px;
+	position: fixed;
+	width: 20%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	margin-top: 0px;
+	margin-left: 0px;
 	background-color: white;
-	left: 0;
 	display: none;
 }
 .saved {
-	width: 40px;
-	height: 40px;
+	height: 1em;
 	display: inline;
 
 }
