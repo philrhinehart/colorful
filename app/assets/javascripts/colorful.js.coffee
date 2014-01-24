@@ -11,7 +11,7 @@ $(document).ready ->
 	$('.container').click (event) ->
 		#Save to Clipboard? Sent to bar at bottom/top.
 		$('.bar').show()
-		add_color( $('.hex').html() )
+		add_color( $('.color .hex').html() )
 		adjust_saved()
 	
 	$(window).scroll (event) ->
@@ -99,6 +99,10 @@ per_to_hex = (per, mult, dig) ->
 	pad = Array(dig).join '0'
 	(pad+Math.round(per*mult).toString(16)).slice(-1*dig)
 
+color_str_to_rgb = (str) ->
+	s=str.slice(1)
+	[s[0..1],s[2..3],s[4..5]]
+
 flip_color = (color) ->
 	for i in color
 		255-i
@@ -110,6 +114,12 @@ hex_str_to_rgb = (hex) ->
 	[r,g,b]
 
 add_color = (color) ->
+	flipped = flip_color hex_str_to_rgb color
+	# Insert new color html
+	$('.bar').append('<div style="background-color:'+color+'" class="saved"><div style="background-color: rgb('+flipped+'); color: '+color+'" class="savedhex">'+color+'</div></div>')
+	colors=$('.saved').length
+	# Adjust height of saved blocks
+	$('.saved').css("height", 100/colors+"%")
 
 adjust_saved = () ->
 	count = $('.saved').length
@@ -118,3 +128,8 @@ adjust_saved = () ->
 
 unsaturated = (cordp) ->
 	cordp[1]*255
+
+(cordp, scroll) ->
+	unsaturated = unsaturated(cordp)
+	saturated = to_hex(cordp)
+	

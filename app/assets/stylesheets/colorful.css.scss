@@ -32,6 +32,13 @@
 	left: 0;
 	top: 0;
 }
+.bg {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
 .bar {
 	position: fixed;
 	width: 20%;
@@ -42,9 +49,25 @@
 	margin-left: 0px;
 	background-color: white;
 	display: none;
+	box-shadow: -2px 0px 60px #888888;
 }
 .saved {
-	height: 1em;
-	display: inline;
-
+	display: block;
+	width: 100%;
+	height: 100%;
+	.savedhex{
+		font-size: 2em;
+		padding: 10px;
+		border-radius: 5px;
+		font-family: monospace;
+		text-align: center;
+		width: 40%;
+		margin: auto;
+		position: relative;
+		top: 50%;
+		-webkit-transform: translatey(-50%);
+		-o-transform: translatey(-50%);
+		transform: translatey(-50%);
+	}
 }
+
