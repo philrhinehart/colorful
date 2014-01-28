@@ -1,22 +1,41 @@
+#Set the width for the left bar
+barWidth = 20
+yp = 0
+
 $(document).ready ->
-	page = [$(window).width(), $(window).height()]
-	$(window).scrollTop(page[1])
+
+	page = element_size $(window)
+	doc = element_size $(document)
+	$(window).scrollTop(doc[1])
+	
+	# ON WINDOW RESIZE
 	$(window).resize (event) ->
 		#Adjust on page resize
-		page = [$(window).width(), $(window).height()]
-	
-	$('.container').mousemove (event) ->
+		page = element_size $(window)
+		canvas = element_size $('#canvas')
+
+	# ON MOUSE MOVE
+	$('#canvas').mousemove (event) ->
 		update_color(event.pageX, event.pageY, $(window).scrollTop(), page)
 
-	$('.container').click (event) ->
-		#Save to Clipboard? Sent to bar at bottom/top.
-		$('.bar').show()
+	# ON CLICK
+	$('#canvas').click (event) ->
+		unless $('#bar:visible') > 0
+			barWidthP = barWidth + "%"
+			cWidth = (100-barWidth) + "%"
+			numX = (100+barWidth)/2 + "%"
+			$('#bar:hidden').show()
+			$('#bar').animate({width: barWidthP})
+			$('#canvas.full').animate({left: barWidthP, width: cWidth}, 'slow')
+			$('.color').animate({left: numX}, 'slow')
 		add_color( $('.color .hex').html() )
-		adjust_saved()
 	
+	# ON SCROLL
 	$(window).scroll (event) ->
 		update_color(event.pageX, event.pageY, $(window).scrollTop(), page)
-		
+
+
+# Calls methods to calculate and print color based on mouse position
 update_color = (x, y, scroll, page) ->
 	cords=[x,y]
 	cordp=scale_cords cords, page
@@ -26,18 +45,21 @@ update_color = (x, y, scroll, page) ->
 	paint_text_bg rgb_to_hex flip_color hex_str_to_rgb hex
 	paint_text hex
 
-
-print_cords = (cords) ->
-	$('span.x').html(cords[0])
-	$('span.y').html(cords[1])
-
+# Prints valus of color to screen
 print_hex = (hex) ->
 	$('.hex').html(hex)
 
+# Takes page size and mouse position. Returns array of percentage
 scale_cords = (cords, page) ->
+	if $('#bar:visible') > 0
+		xp = (cords[0]-(page[0]*barWidth/100))/$('#bar').width()
+	else	
 		xp = cords[0]/page[0]
-		yp = cords[1]/page[1]
-		[xp,yp]
+	yp = cords[1]/page[1]
+	[xp,yp]
+
+element_size = (e) ->
+	[e.width(), e.height()]
 
 paint_bg = (color) ->
 	$('.container').css('background-color', color)
@@ -88,7 +110,7 @@ tohex = (cordp) ->
 			rgb_to_hex [a,c,bd]
 		else
 			console.log "X Zone not in range"
-	
+
 rgb_to_hex = (rgb) ->
 	hex=""
 	hex+= ('0' + i.toString(16)).slice(-2) for i in rgb
@@ -116,10 +138,11 @@ hex_str_to_rgb = (hex) ->
 add_color = (color) ->
 	flipped = flip_color hex_str_to_rgb color
 	# Insert new color html
-	$('.bar').append('<div style="background-color:'+color+'" class="saved"><div style="background-color: rgb('+flipped+'); color: '+color+'" class="savedhex">'+color+'</div></div>')
+	newhtml = '<div style="background-color:'+color+'" class="saved"><div style="background-color: rgb('+flipped+'); color: '+color+'" class="savedhex">'+color+'</div></div>'
+	$('#bar').append(newhtml)
 	colors=$('.saved').length
 	# Adjust height of saved blocks
-	$('.saved').css("height", 100/colors+"%")
+	$('.saved').animate({height: 100/colors+'%'}, 'slow')
 
 adjust_saved = () ->
 	count = $('.saved').length
