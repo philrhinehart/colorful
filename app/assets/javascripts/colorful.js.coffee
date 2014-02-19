@@ -3,7 +3,6 @@ barWidth = 20
 yp = 0
 
 $(document).ready ->
-
 	page = element_size $(window)
 	doc = element_size $(document)
 	$(window).scrollTop(doc[1])
@@ -32,14 +31,21 @@ $(document).ready ->
 	
 	# ON SCROLL
 	$(window).scroll (event) ->
-		update_color(event.pageX, event.pageY, $(window).scrollTop(), page)
+		update_color(x, y, $(window).scrollTop(), page)
 
 
 # Calls methods to calculate and print color based on mouse position
 update_color = (x, y, scroll, page) ->
+	
 	cords=[x,y]
+	
+	# Converts mouse coordinates to percentage across canvas
 	cordp=scale_cords cords, page
+	
+	# Converts percentage and scroll to hex color codes
 	hex = tohex cordp, scroll
+
+	# Print value and format screen/colors
 	print_hex hex
 	paint_bg hex
 	paint_text_bg rgb_to_hex flip_color hex_str_to_rgb hex
@@ -51,9 +57,11 @@ print_hex = (hex) ->
 
 # Takes page size and mouse position. Returns array of percentage
 scale_cords = (cords, page) ->
-	if $('#bar:visible') > 0
-		xp = (cords[0]-(page[0]*barWidth/100))/$('#bar').width()
-	else	
+	if $('#bar:visible').length > 0
+		bw = $('#bar').width()
+		cw = $('#canvas').width()
+		xp = (cords[0]-bw)/cw
+	else
 		xp = cords[0]/page[0]
 	yp = cords[1]/page[1]
 	[xp,yp]
@@ -139,10 +147,17 @@ add_color = (color) ->
 	flipped = flip_color hex_str_to_rgb color
 	# Insert new color html
 	newhtml = '<div style="background-color:'+color+'" class="saved"><div style="background-color: rgb('+flipped+'); color: '+color+'" class="savedhex">'+color+'</div></div>'
+	# Insert ajax call to controller to add the above code via helper
 	$('#bar').append(newhtml)
+
 	colors=$('.saved').length
 	# Adjust height of saved blocks
-	$('.saved').animate({height: 100/colors+'%'}, 'slow')
+	if colors <= 5
+		$('.saved').animate({height: 100/colors+'%'}, 'slow')
+	else
+		$('.saved').css({height: '20%'})
+		$('#bar').scrollTop(1000000000)
+		#$('#bar').animate({scrollTop: $(this).height()}, 'fast')
 
 adjust_saved = () ->
 	count = $('.saved').length
