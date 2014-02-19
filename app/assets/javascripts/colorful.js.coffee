@@ -21,7 +21,8 @@ $(document).ready ->
 			$('#bar').animate({width: barWidthP})
 			$('#canvas.full').animate({left: barWidthP, width: cWidth}, 'slow')
 			$('.color').animate({left: numX}, 'slow')
-	
+		addColor()
+
 scrollPer = () ->
 	Math.round($(document).scrollTop()/($(document).height()-$(window).height())*100)
 
@@ -42,13 +43,15 @@ currentColor = () ->
 
 updateScreen = (e) ->
 	paintBG(xPer(e),scrollPer(),yPer(e))
-	hex = currentColor
+	hex = currentColor()
+	hexFlip = flipHex hex
 	paintText hex
-	updateText hex
-	$('#debug').text(hex)
+	updateText hex, hexFlip
+	paintTextBG hexFlip
 
-updateText = (hex) ->
-	$('.hex').html(hex)
+updateText = (original,invert) ->
+	$('.hex').html(original)
+	$('.sub').html(invert)
 
 paintBG = (h,s,l) ->
 	$('#canvas').css("background-color", "hsl("+h+","+s+"%,"+l+"%)")
@@ -69,24 +72,22 @@ toHex = (rgb) ->
 
 toRGB = (hex) ->
 	#hex string to rgb array
-	r=parseInt(hex[1..2],16)
-	g=parseInt(hex[3..4],16)
-	b=parseInt(hex[5..6],16)
+	r=parseInt("0x"+hex[1..2],16)
+	g=parseInt("0x"+hex[3..4],16)
+	b=parseInt("0x"+hex[5..6],16)
 	[r,g,b]
 
-color_str_to_rgb = (str) ->
-	s=str.slice(1)
-	[s[0..1],s[2..3],s[4..5]]
-
-flipColor = (hex) ->
-	rgb = hexToRGB(hex)
+flipRGB = (rgb) ->
 	for i in rgb
 		255-i
 
-add_color = (color) ->
-	flipped = flip_color hex_str_to_rgb color
-	# Insert new color html
-	newhtml = '<div style="background-color:'+color+'" class="saved"><div style="background-color: rgb('+flipped+'); color: '+color+'" class="savedhex">'+color+'</div></div>'
+flipHex = (hex) ->
+	toHex flipRGB toRGB hex
+
+addColor = () ->
+	color = currentColor()
+	flipped = flipHex(color)
+	newhtml = '<div style="background-color:'+color+'" class="saved"><div style="background-color:'+flipped+'; color: '+color+'" class="savedhex">'+color+'</div></div>'
 	# Insert ajax call to controller to add the above code via helper
 	$('#bar').append(newhtml)
 
@@ -97,18 +98,4 @@ add_color = (color) ->
 		$('.saved').animate({height: 100/colors+'%'}, 'slow')
 	else
 		$('#bar').scrollTop(1000000000)
-		#$('#bar').animate({scrollTop: 1000000000, 'slow'})
-		#$('.saved').animate({height: 100/maxColors+'%'}, 'slow')
 		$('.saved').css({height: 100/maxColors+'%'})
-
-adjust_saved = () ->
-	count = $('.saved').length
-	height = $(window).height/count
-	$('.saved').css('height',height)
-
-unsaturated = (cordp) ->
-	cordp[1]*255
-
-(cordp, scroll) ->
-	unsaturated = unsaturated(cordp)
-	saturated = to_hex(cordp)
