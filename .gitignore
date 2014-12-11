@@ -14,3 +14,14 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# OS X Files
+.DS_Store
+
+# VIM
+*.swp
+
+# Sass Cache Files
+*/.sass-cache/*
+*.sassc
+*.map
