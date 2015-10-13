@@ -1,6 +1,9 @@
 #Colorful
 
-###A basic hex color-picker webapp.
+###A color-picker webapp for the RGB challeneged.
+-Move mouse to change hue.
+-Scroll to adjust saturation.
+-Click to save.
 
 ![GIF!](colorful.gif)
 
