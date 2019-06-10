@@ -5,7 +5,7 @@
 * Scroll to adjust saturation.
 * Click to save.
 
-[Try it out!](http://philrhinehart.github.io/colorful)##
+[Try it out!](http://philrhinehart.github.io/colorful)
 
 ![GIF!](colorful.gif)
 
